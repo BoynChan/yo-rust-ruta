@@ -1,6 +1,3 @@
-// TODO: remove this when you're done with your implementation.
-#![allow(unused_imports, unused_variables, dead_code)]
-
 pub trait Widget {
     /// Natural width of `self`.
     fn width(&self) -> usize;
@@ -78,7 +75,7 @@ impl Widget for Button {
 
     fn draw_into(&self, buffer: &mut dyn std::fmt::Write) {
         buffer
-            .write_str(format!("| {} |\n", self.label.label).as_str())
+            .write_str(format!("| {} |", self.label.label).as_str())
             .unwrap();
     }
 }
@@ -99,4 +96,14 @@ impl Widget for Window {
             buffer.write_str("\n").unwrap()
         }
     }
+}
+
+pub fn print_gui() {
+    let mut window = Window::new("Rust GUI Demo 1.23");
+    window.add_widget(Box::new(Label::new("This is a small text GUI demo.")));
+    window.add_widget(Box::new(Button::new(
+        "Click me!",
+        Box::new(|| println!("You clicked the button!")),
+    )));
+    window.draw();
 }
