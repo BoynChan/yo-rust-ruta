@@ -76,7 +76,7 @@ mod library_test {
         library.print_books();
 
         match library.oldest_book() {
-            Some(book) => println!("My oldest book is {book}"),
+            Some(book) => println!("My oldest book is {}", book),
             None => println!("My library is empty!"),
         }
         if let Some(book) = library.oldest_book() {

@@ -1,4 +1,6 @@
+use std::fs;
 use std::io::{self, Read};
+use std::panic;
 use std::{fs::File, io::ErrorKind};
 
 fn main() {
@@ -17,7 +19,31 @@ fn main() {
             }
         }
     };
+    let result = panic::catch_unwind(|| {
+        println!("Hello");
+    });
+    assert!(result.is_ok());
     println!("Hello, world!");
+}
+
+enum ReadUsernameError {
+    IoError(io::Error),
+    EmptyUsername(String),
+}
+
+impl From<io::Error> for ReadUsernameError {
+    fn from(err: io::Error) -> Self {
+        ReadUsernameError::IoError(err)
+    }
+}
+
+fn read_username(path: &str) -> Result<String, ReadUsernameError> {
+    let mut username = String::with_capacity(100);
+    fs::File::open(path)?.read_to_string(&mut username)?;
+    if username.is_empty() {
+        return Err(ReadUsernameError::EmptyUsername(String::from(path)));
+    }
+    Ok(username)
 }
 
 fn read_username_from_file() -> Result<String, io::Error> {
