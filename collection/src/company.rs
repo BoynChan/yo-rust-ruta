@@ -12,6 +12,7 @@ impl Company {
         if s_l.len() != 4 {
             return Option::None;
         }
+
         if s_l[0] != "Add" || s_l[2] != "to" {
             return Option::None;
         }
