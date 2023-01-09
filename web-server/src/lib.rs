@@ -61,7 +61,7 @@ impl ThreadPool {
 
 impl Drop for ThreadPool {
     fn drop(&mut self) {
-        for worker in &mut self.threads {
+        for _ in &mut self.threads {
             self.sender.send(Message::Terminate).unwrap();
         }
         for worker in &mut self.threads {
