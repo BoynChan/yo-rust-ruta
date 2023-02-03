@@ -1,2 +1,2 @@
-pub mod box_example;
-pub use box_example::boyn_box::*;
+mod box_code;
+pub use box_code::box_fn;
