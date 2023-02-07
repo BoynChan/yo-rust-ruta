@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: longhu
+  labels:
+    app: longhu
+spec:
+  selector:
+    matchLabels:
+      app: longhu
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app:  longhu
+    spec:
+      containers:
+      - name:  rust-grpc
+        image:  longhu
+        imagePullPolicy: Never
+        ports:
+          - containerPort: 50051
+        resources:
+          requests:
+            cpu: 100m
+            memory: 200Mi
+          limits:
+            cpu: 100m
+            memory: 200Mi
+      imagePullSecrets:
+      - name: default-secret
