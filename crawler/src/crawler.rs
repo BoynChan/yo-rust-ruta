@@ -83,7 +83,7 @@ impl Crawler {
             spider.clone(),
             urls_to_visit_rx,
             new_urls_tx.clone(),
-            item_tx.clone(),
+            item_tx,
             active_spiders.clone(),
             self.delay,
             barrier.clone(),
@@ -108,9 +108,8 @@ impl Crawler {
             {
                 break;
             }
-            sleep(Duration::from_millis(5)).await;
+            sleep(Duration::from_secs(1)).await;
         }
-
         log::info!("crawler: control loop exited");
         drop(urls_to_visit_tx);
         barrier.wait().await;
@@ -170,7 +169,6 @@ impl Crawler {
                     active_spiders.fetch_sub(1, Ordering::SeqCst);
                 })
                 .await;
-
             drop(items_tx);
             barrier.wait().await;
         });
