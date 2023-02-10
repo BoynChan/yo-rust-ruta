@@ -1,0 +1,34 @@
+
+syntax = "proto3";
+package helloworld;
+
+message HelloRequest {
+    string name = 1;
+}
+
+message HelloReply {
+    string message = 1;
+}
+
+message InsertNameRequest {
+    string name = 1;
+}
+
+message InsertNameResponse {
+    bool success = 1;
+}
+
+message GetNameRequest {
+    string name = 1;
+}
+
+message GetNameResponse {
+    int32 id = 1;
+    string name = 2;
+}
+
+service Greeter {
+    rpc SayHello(HelloRequest) returns(HelloReply);
+    rpc InsertName(InsertNameRequest) returns(InsertNameResponse);
+    rpc GetName(GetNameRequest) returns(GetNameResponse);
+}

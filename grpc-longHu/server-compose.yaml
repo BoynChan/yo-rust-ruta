@@ -1,0 +1,27 @@
+version: '3.1'
+services:
+
+  db:
+    image: postgres:15-alpine
+    restart: always
+    container_name: pg_db
+    volumes:
+      - "/Users/chenzhanpeng/.docker/pgdata:/var/lib/postgresql/data/pgdata"
+    environment:
+      POSTGRES_PASSWORD: example
+      POSTGRES_DB: longhu
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - 5432:5432
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+  
+  server:
+    image: longhu
+    restart: always
+    ports:
+      - 50051:50051
