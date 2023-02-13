@@ -4,6 +4,7 @@ use std::fmt::Debug;
 
 mod hackernews;
 pub use hackernews::HackerNewsSpider;
+pub use hackernews::New;
 
 #[async_trait]
 pub trait Spider: Send + Sync {

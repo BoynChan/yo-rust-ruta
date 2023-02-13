@@ -1,3 +1,6 @@
+use dotenv::dotenv;
 fn main() {
-    println!("Hello, world!");
+    dotenv().ok();
+    let pw = std::env::var("PG_PW").unwrap();
+    println!("{}", pw);
 }

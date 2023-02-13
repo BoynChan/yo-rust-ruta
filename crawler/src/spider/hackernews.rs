@@ -4,6 +4,8 @@ use reqwest::Client;
 use scraper::{ElementRef, Html, Selector};
 
 use super::Spider;
+use crate::entity::news::Entity;
+use sea_orm::entity::prelude::DatabaseConnection;
 use std::time::Duration;
 use time::strptime;
 
@@ -13,18 +15,18 @@ pub struct HackerNewsSpider {
     t_list_selector: Selector,
     title_selector: Selector,
     publish_selector: Selector,
+    db_pool: DatabaseConnection,
 }
 
 #[derive(Debug)]
 pub struct New {
-    title: String,
-    source: String,
-    rank: usize,
-    publish_date: i64,
+    pub title: String,
+    pub source: String,
+    pub rank: usize,
+    pub publish_date: i64,
 }
-
 impl HackerNewsSpider {
-    pub fn new(limit: usize) -> Self {
+    pub fn new(limit: usize, db_pool: DatabaseConnection) -> Self {
         let http_timeout = Duration::from_secs(6);
         let http_client = Client::builder()
             .timeout(http_timeout)
@@ -44,6 +46,7 @@ impl HackerNewsSpider {
             t_list_selector: tlist,
             title_selector: title_selc,
             publish_selector: publish_list_selc,
+            db_pool: db_pool,
         }
     }
 
@@ -120,8 +123,7 @@ impl Spider for HackerNewsSpider {
     }
 
     async fn process(&self, item: Self::Item) -> Result<(), Error> {
-        println!("{:?}", item);
-
+        let mut new = Entity::Model {};
         Ok(())
     }
 }
