@@ -14,12 +14,6 @@ pub enum Error {
     DbErr(String),
 }
 
-impl From<sea_orm::DbErr> for Error {
-    fn from(value: sea_orm::DbErr) -> Self {
-        Error::DbErr(value.to_string())
-    }
-}
-
 impl From<reqwest::Error> for Error {
     fn from(err: reqwest::Error) -> Self {
         Error::Reqwest(err.to_string())
