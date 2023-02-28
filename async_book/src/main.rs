@@ -1,13 +1,23 @@
-use std::{thread, time};
-use futures::executor::block_on;
+use mini_redis::{Connection, Frame};
+use tokio::net::{TcpListener, TcpStream};
 
-fn main() {
-    let future = doing_sth();
-    block_on(future);
-    println!("Future is done");
+#[tokio::main]
+async fn main() {
+    let listener = TcpListener::bind("127.0.0.1:6379").await.unwrap();
+    loop {
+        let (socket, _) = listener.accept().await.unwrap();
+        tokio::spawn(async move {
+            process(socket).await;
+        });
+    }
 }
 
-async fn doing_sth() {
-    thread::sleep(time::Duration::from_millis(1000));
-    println!("Hello, world!");
+async fn process(socket: TcpStream) {
+    let mut conn = Connection::new(socket);
+
+    if let Some(frame) = conn.read_frame().await.unwrap() {
+        println!("GOT: {:?}", frame);
+        let response = Frame::Error("unimplement".to_string());
+        conn.write_frame(&response).await.unwrap()
+    }
 }
