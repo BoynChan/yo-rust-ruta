@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use mini_redis::{Connection, Frame};
 use tokio::net::{TcpListener, TcpStream};
 
@@ -13,7 +15,30 @@ async fn main() {
 }
 
 async fn process(socket: TcpStream) {
+    use mini_redis::Command::{self, Get, Set};
     let mut conn = Connection::new(socket);
+
+    let mut db = HashMap::new();
+
+    while let Some(frame) = conn.read_frame().await.unwrap() {
+        let response = match Command::from_frame(frame).unwrap() {
+            Set(cmd) => {
+                println!("Set:{:?}", cmd);
+                db.insert(cmd.key().to_string(), cmd.value().to_vec());
+                Frame::Simple("OK".to_string())
+            }
+            Get(cmd) => {
+                println!("Get:{:?}", cmd);
+                if let Some(value) = db.get(cmd.key()) {
+                    Frame::Bulk(value.clone().into())
+                } else {
+                    Frame::Null
+                }
+            }
+            cmd => panic!("unimplemented: {:?}", cmd),
+        };
+        conn.write_frame(&response).await.unwrap()
+    }
 
     if let Some(frame) = conn.read_frame().await.unwrap() {
         println!("GOT: {:?}", frame);
