@@ -22,7 +22,6 @@ async fn main() {
     }
 }
 
-type DB = Arc<Mutex<HashMap<String, Bytes>>>;
 type ShardedDB = Arc<Vec<Mutex<HashMap<String, Bytes>>>>;
 
 fn new_sharded_db(num_shards: usize) -> ShardedDB {
@@ -73,4 +72,5 @@ async fn process(socket: TcpStream, db: ShardedDB) {
         let response = Frame::Error("unimplement".to_string());
         conn.write_frame(&response).await.unwrap()
     }
+    // write a spawn thread in tokio
 }
