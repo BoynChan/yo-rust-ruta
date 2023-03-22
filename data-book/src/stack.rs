@@ -41,6 +41,54 @@ impl<T> Stack<T> {
     }
 }
 
+// use stack to check parentheses
+fn par_checker(par: &str) -> bool {
+    let len = par.len();
+    let mut s = Stack::new();
+    let char_list: Vec<char> = par.chars().into_iter().collect();
+
+    for i in 0..len {
+        let c = char_list[i];
+        if c == '(' {
+            s.push(c);
+        } else if c == ')' {
+            if s.is_empty() {
+                return false;
+            }
+            s.pop();
+        }
+    }
+    s.is_empty()
+}
+
+fn por_match(open: char, close: char) -> bool {
+    let o = "([{";
+    let c = ")]}";
+    o.find(open) == c.find(close)
+}
+
+fn par_checker2(par: &str) -> bool {
+    let len = par.len();
+    let mut s = Stack::new();
+    let char_list: Vec<char> = par.chars().into_iter().collect();
+
+    for i in 0..len {
+        let c = char_list[i];
+        if c == '(' || c == '[' || c == '{' {
+            s.push(c);
+        } else if c == ')' || c == '}' || c == ']' {
+            if s.is_empty() {
+                return false;
+            }
+            if !por_match(*s.peek().unwrap(), c) {
+                return false;
+            }
+            s.pop();
+        }
+    }
+    s.is_empty()
+}
+
 #[test]
 fn test_stack() {
     let mut s = Stack::new();
@@ -51,4 +99,23 @@ fn test_stack() {
     assert_eq!(s.size(), 1);
     assert_eq!(s.pop().unwrap(), 1);
     assert_eq!(s.is_empty(), true);
+}
+#[test]
+fn test_par_checker() {
+    assert_eq!(par_checker("()"), true);
+    assert_eq!(par_checker("(())"), true);
+    assert_eq!(par_checker("(()"), false);
+    assert_eq!(par_checker("())"), false);
+}
+
+#[test]
+fn test_par_checker2() {
+    assert_eq!(par_checker2("()"), true);
+    assert_eq!(par_checker2("(())"), true);
+    assert_eq!(par_checker2("(()"), false);
+    assert_eq!(par_checker2("())"), false);
+    assert_eq!(par_checker2("[[{(())}]]"), true);
+    assert_eq!(par_checker2("[(){}]"), true);
+    assert_eq!(par_checker2("[[(])]"), false);
+    assert_eq!(par_checker2("{}{}{}"), true);
 }
